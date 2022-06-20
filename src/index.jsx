@@ -1,10 +1,10 @@
 import React from 'react'
-import AtTextarea from './at-textarea.jsx'
+import AtTextarea from './comments/at-textarea/index.jsx'
 import styles from './index.less'
 const testCom = () => { 
     return (
-        <div className={styles.text}>
-             <div ><AtTextarea/></div>
+        <div className={styles.page}>
+             <AtTextarea/>
         </div>
     )
 }
