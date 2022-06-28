@@ -4,8 +4,8 @@ const AtTextarea = () => {
         const str = e.target.value
         console.log(str)
     }
-    const editorClick = (e: any) => {
-        console.log('click', e);
+    const editorClick = (event: any) => {
+        console.log('click', event);
     }
     return (
         <div>
