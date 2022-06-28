@@ -19,8 +19,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$|.jsx/,
-        use: "babel-loader",
+        test: /\.(js|mjs|jsx|ts|tsx)$/,
+        use: [
+          {
+            //用 babel-loader 把es6转es5
+            loader: "babel-loader",
+          },
+          "ts-loader",
+        ],
         exclude: /node_modules/,
       },
       {
@@ -45,7 +51,7 @@ module.exports = {
   },
   plugins: [htmlWebpackPlugin], //插件：自动注入编译打包好的文件
   resolve: {
-    extensions: [".js", ".jsx"],
+    extensions: [".js", ".tsx"],
   },
   devServer: {
     port: 3001, //端口号
