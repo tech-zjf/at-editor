@@ -22,4 +22,16 @@ declare namespace API {
       value: string;
     };
   };
+  type Options = { name: string; id: number | string };
+
+  type AtTextareaProps = {
+    target?: string;
+    height: number;
+    placement?: "top" | "bottom";
+    onRequest: (keyword?: string) => Options[];
+    onSelect: (selectList: Options[] | []) => void;
+  };
+  type SelectComProps = {
+    options: Options[];
+  };
 }
