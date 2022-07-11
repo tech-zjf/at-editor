@@ -1,7 +1,7 @@
+import StringTools from '../../tools/string-tools.js'
 import { useEffect, useState } from 'react'
 import SelectUser from '../select-user'
 import styles from './index.less'
-
 
 let content: string = ""
 
@@ -10,15 +10,13 @@ let cursorIndex!: number
 let atIndex!: number
 
 const AtTextarea = (props: API.AtTextareaProps) => {
-    const { height, onRequest, onSelect } = props
+    const { height, onRequest, } = props
 
     const [value, setValue] = useState<string>('')
 
     const [optionsList, setOptionsList] = useState<API.Options[]>([])
 
     const [selectModal, setSelectModal] = useState<boolean>(false)
-
-    console.log(onRequest, onSelect, setSelectModal);
 
     // 获取光标索引
     const getCursorIndex = () => {
@@ -39,16 +37,28 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         // 获取光标左边的
         atIndex = content.slice(0, cursorIndex + 1).lastIndexOf('@')
 
-        if (atIndex !== -1) {
-            console.log(atIndex, cursorIndex);
-            // @|
-            if (atIndex === cursorIndex) {
-                setSelectModal(true)
-            }
-        }
-
     }
 
+    useEffect(() => {
+        if (atIndex !== -1) {
+            // 获取@到光标之间的字符串
+            const keyStr = value.substring(
+                atIndex + 1,
+                cursorIndex + 1
+            )
+            // 不包含空格或者换行符的话 当关键词查询用户列表接口
+            if (StringTools.isIncludeSpacesOrLineBreak(keyStr)) {
+                console.log(atIndex, cursorIndex);
+                const _options = onRequest(keyStr)
+                setOptionsList(_options)
+                setSelectModal(true)
+            } else {
+                setSelectModal(false)
+            }
+        } else {
+            setSelectModal(false)
+        }
+    }, [value])
 
     useEffect(() => {
         const list = onRequest!()
