@@ -1,6 +1,6 @@
 class StringTools {
   static isIncludeSpacesOrLineBreak(str) {
-    return !/ /.test(str) && !/\n/gi.test(str);
+    return /(\s+)|([\r\n])/gi.test(str);
   }
 }
 

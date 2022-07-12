@@ -1,3 +1,4 @@
+import StringTools from '../../tools/string-tools'
 import { useEffect, useRef, useState } from 'react'
 import SelectUser from '../select-user'
 import styles from './index.less'
@@ -6,6 +7,7 @@ import styles from './index.less'
 const AtTextarea = (props: API.AtTextareaProps) => {
     const { height, onRequest } = props
 
+    const [content, setContent] = useState<string>('')
     // 选择用户弹框
     const [visible, setVisible] = useState<boolean>(false)
 
@@ -13,17 +15,15 @@ const AtTextarea = (props: API.AtTextareaProps) => {
     const [options, setOptions] = useState<API.Options[]>([])
 
     // 输入@之前的字符串
-    const [atBeforeStr, setAtBeforeStr] = useState<Node>()
+    const [atBeforeStr, setAtBeforeStr] = useState<Node | string>()
 
-    // @的索引
+    // @的索引 + 1
     const [currentAtIdx, setCurrentAtIdx] = useState<number>()
 
     // 弹框的x,y轴的坐标
     const [cursorPosition, setCursorPosition] = useState<API.Position>({ x: 0, y: 0 })
 
     const atRef = useRef<any>()
-
-    console.log(atBeforeStr, currentAtIdx, cursorPosition);
 
     // 首次加载获取options数据
     useEffect(() => {
@@ -33,7 +33,11 @@ const AtTextarea = (props: API.AtTextareaProps) => {
 
     // 编辑器change
     const editorChange = (event: any) => {
+        const _content = event.target.innerText
+        setContent(_content)
+        // 当前输入的
         const currentStr = event.nativeEvent.data
+
         if (currentStr === '@') {
             openSelectModal()
         }
@@ -57,7 +61,7 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         setAtBeforeStr(focusNode as Node)
 
         // 缓存光标所在节点位置
-        setCurrentAtIdx(focusOffset - 1)
+        setCurrentAtIdx(focusOffset)
 
         // 光标所在位置
         setCursorPosition({ x, y })
@@ -73,8 +77,8 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         const selection = window.getSelection()
         const range = selection?.getRangeAt(0) as Range
         // 选中输入的 @ 符
-        range.setStart(atBeforeStr!, currentAtIdx!)
-        range.setEnd(atBeforeStr!, currentAtIdx! + 1)
+        range.setStart(atBeforeStr as Node, currentAtIdx! - 1)
+        range.setEnd(atBeforeStr as Node, currentAtIdx!)
         // 删除输入的 @ 符
         range.deleteContents()
         // 创建元素节点
@@ -83,13 +87,29 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         element.style.color = 'blue'
         element.contentEditable = 'false'
         element.innerText = `@${item.name}`
-        // 选中元素节点
+        // 插入元素节点
         range.insertNode(element)
         // 光标移动到末尾
         range.collapse()
 
         setVisible(false)
     }
+
+    useEffect(() => {
+        // 截取@到光标之间的字符串 -> 模糊查询用户
+        console.log('currentAtIdx', currentAtIdx);
+        if (currentAtIdx) {
+            const selection = window.getSelection() as Selection
+            const { focusOffset } = selection
+            const keyStr = content.slice(currentAtIdx, focusOffset)
+            if (StringTools.isIncludeSpacesOrLineBreak(keyStr)) {
+                setVisible(false)
+            } else {
+                const _options = onRequest(keyStr)
+                setOptions(_options)
+            }
+        }
+    }, [content])
 
     return (
         <div style={{ height, position: 'relative' }}>
