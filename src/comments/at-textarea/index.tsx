@@ -1,4 +1,3 @@
-import StringTools from '../../tools/string-tools'
 import { useEffect, useRef, useState } from 'react'
 import SelectUser from '../select-user'
 import styles from './index.less'
@@ -7,7 +6,6 @@ import styles from './index.less'
 const AtTextarea = (props: API.AtTextareaProps) => {
     const { height, onRequest } = props
 
-    const [content, setContent] = useState<string>('')
     // 选择用户弹框
     const [visible, setVisible] = useState<boolean>(false)
 
@@ -33,8 +31,7 @@ const AtTextarea = (props: API.AtTextareaProps) => {
 
     // 编辑器change
     const editorChange = (event: any) => {
-        const _content = event.target.innerText
-        setContent(_content)
+        // const _content = event.target.innerText
         // 当前输入的
         const currentStr = event.nativeEvent.data
 
@@ -99,20 +96,6 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         atRef.current.focus()
     }
 
-    useEffect(() => {
-        // 截取@到光标之间的字符串 -> 模糊查询用户
-        if (currentAtIdx) {
-            const selection = window.getSelection() as Selection
-            const { focusOffset } = selection
-            const keyStr = content.slice(currentAtIdx, focusOffset)
-            if (StringTools.isIncludeSpacesOrLineBreak(keyStr)) {
-                setVisible(false)
-            } else {
-                const _options = onRequest(keyStr)
-                setOptions(_options)
-            }
-        }
-    }, [content])
 
     return (
         <div style={{ height, position: 'relative' }}>
