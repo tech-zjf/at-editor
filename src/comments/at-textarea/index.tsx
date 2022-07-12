@@ -68,8 +68,9 @@ const AtTextarea = (props: API.AtTextareaProps) => {
 
         // 弹框
         setVisible(true)
+
         // 输入框失去焦点
-        // refAtInput.value.blur()
+        atRef.current.blur()
 
     }
 
@@ -93,11 +94,13 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         range.collapse()
 
         setVisible(false)
+
+        // 输入框聚焦
+        atRef.current.focus()
     }
 
     useEffect(() => {
         // 截取@到光标之间的字符串 -> 模糊查询用户
-        console.log('currentAtIdx', currentAtIdx);
         if (currentAtIdx) {
             const selection = window.getSelection() as Selection
             const { focusOffset } = selection
@@ -121,8 +124,8 @@ const AtTextarea = (props: API.AtTextareaProps) => {
                 contentEditable={true}
                 onInput={editorChange}
                 onClick={editorClick}
-                onBlur={() => {
-
+                onFocus={() => {
+                    setVisible(false)
                 }}
             >
             </div>
