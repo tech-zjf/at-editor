@@ -1,85 +1,91 @@
-import StringTools from '../../tools/string-tools.js'
 import { useEffect, useState } from 'react'
 import SelectUser from '../select-user'
 import styles from './index.less'
 
-let content: string = ""
-
-let cursorIndex!: number
-
-let atIndex!: number
 
 const AtTextarea = (props: API.AtTextareaProps) => {
-    const { height, onRequest, } = props
+    const { height, onRequest } = props
 
-    const [value, setValue] = useState<string>('')
+    // 选择用户弹框
+    const [visible, setVisible] = useState<boolean>(false)
 
-    const [optionsList, setOptionsList] = useState<API.Options[]>([])
+    // 用户数据
+    const [options, setOptions] = useState<API.Options[]>([])
 
-    const [selectModal, setSelectModal] = useState<boolean>(false)
+    // 输入@之前的字符串
+    const [atBeforeStr, setAtBeforeStr] = useState<Node>()
 
-    // 获取光标索引
-    const getCursorIndex = () => {
-        return (document.getElementById('textareaRef') as any).selectionStart - 1
-    }
+    // @的索引
+    const [currentAtIdx, setCurrentAtIdx] = useState<number>()
+
+    // 弹框的x,y轴的坐标
+    const [cursorPosition, setCursorPosition] = useState<API.Position>({ x: 0, y: 0 })
+
+    console.log(atBeforeStr, currentAtIdx, cursorPosition);
+
+    // 首次加载获取options数据
+    useEffect(() => {
+        const _options = onRequest()
+        setOptions(_options)
+    }, [])
 
     // 编辑器change
-    const editorChange = (e: any) => {
-        content = e.target.value
-        setValue(content)
-        editorClick()
+    const editorChange = (event: any) => {
+        const currentStr = event.nativeEvent.data
+        if (currentStr === '@') {
+            console.log('输入的@');
+            openSelectModal()
+        }
     }
 
     const editorClick = () => {
-        // 1.点击、change 获取光标的索引
-        cursorIndex = getCursorIndex()
-
-        // 获取光标左边的
-        atIndex = content.slice(0, cursorIndex + 1).lastIndexOf('@')
 
     }
 
-    useEffect(() => {
-        if (atIndex !== -1) {
-            // 获取@到光标之间的字符串
-            const keyStr = value.substring(
-                atIndex + 1,
-                cursorIndex + 1
-            )
-            // 不包含空格或者换行符的话 当关键词查询用户列表接口
-            if (StringTools.isIncludeSpacesOrLineBreak(keyStr)) {
-                console.log(atIndex, cursorIndex);
-                const _options = onRequest(keyStr)
-                setOptionsList(_options)
-                setSelectModal(true)
-            } else {
-                setSelectModal(false)
-            }
-        } else {
-            setSelectModal(false)
-        }
-    }, [value])
+    // 展开弹框
+    const openSelectModal = () => {
+        const selection = window.getSelection() as Selection
+        const range = selection?.getRangeAt(0) as Range
+        const { focusNode, focusOffset } = selection
+        const { x, y } = range.getBoundingClientRect()
 
-    useEffect(() => {
-        const list = onRequest!()
-        setOptionsList(list)
-    }, [])
+        // 缓存光标所在节点
+        setAtBeforeStr(focusNode as Node)
+
+        // 缓存光标所在节点位置
+        setCurrentAtIdx(focusOffset)
+
+        // 光标所在位置
+        setCursorPosition({ x, y })
+
+        // 弹框
+        setVisible(true)
+        // 输入框失去焦点
+        // refAtInput.value.blur()
+
+    }
+
 
     return (
-        <div style={{ height: `${height}px` }}>
+        <div style={{ height, position: 'relative' }}>
             {/* 编辑器 */}
-            <textarea
-                id="textareaRef"
+            <div
+                id="atInput"
                 className={styles.editorDiv}
-                placeholder={'请输入...'}
-                value={value}
+                contentEditable={true}
                 onInput={editorChange}
                 onClick={editorClick}
+                onBlur={() => {
+                    setVisible(false)
+                }}
             >
-            </textarea>
-            {
-                selectModal && <SelectUser options={optionsList} />
-            }
+            </div>
+            {/* 选择用户框 */}
+            <SelectUser
+                options={options}
+                visible={visible}
+                cursorPosition={cursorPosition}
+            />
         </div>
     )
 }

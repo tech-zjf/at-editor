@@ -24,6 +24,8 @@ declare namespace API {
   };
   type Options = { name: string; id: number | string };
 
+  type Position = { x: number; y: number };
+
   type AtTextareaProps = {
     target?: string;
     height: number;
@@ -32,6 +34,8 @@ declare namespace API {
     onSelect: (selectList: Options[] | []) => void;
   };
   type SelectComProps = {
+    visible: boolean;
     options: Options[];
+    cursorPosition: Position;
   };
 }
