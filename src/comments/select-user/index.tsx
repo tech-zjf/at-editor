@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.less'
 const SelectUser = React.memo((props: API.SelectComProps) => {
 
-    const { options, visible, cursorPosition } = props
+    const { options, visible, cursorPosition, onSelect } = props
 
     const { x, y } = cursorPosition
 
@@ -19,7 +19,7 @@ const SelectUser = React.memo((props: API.SelectComProps) => {
                 {
                     options.map((item, idx) => {
                         return (
-                            <li key={item.id}>{idx} - {item.name}</li>
+                            <li key={item.id} onClick={() => { onSelect(item) }}>{idx} - {item.name}</li>
                         )
                     })
                 }

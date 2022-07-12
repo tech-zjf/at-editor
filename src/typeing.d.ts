@@ -37,5 +37,6 @@ declare namespace API {
     visible: boolean;
     options: Options[];
     cursorPosition: Position;
+    onSelect: (e: Options) => void;
   };
 }
