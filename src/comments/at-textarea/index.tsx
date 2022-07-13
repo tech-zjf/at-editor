@@ -1,3 +1,4 @@
+import StringTools from '../../tools/string-tools'
 import { useEffect, useRef, useState } from 'react'
 import SelectUser from '../select-user'
 import styles from './index.less'
@@ -15,6 +16,8 @@ const AtTextarea = (props: API.AtTextareaProps) => {
     // 输入@之前的字符串
     const [atBeforeStr, setAtBeforeStr] = useState<Node | string>()
 
+    const [keyStr, setkeyStr] = useState<string>('')
+
     // @的索引 + 1
     const [currentAtIdx, setCurrentAtIdx] = useState<number>()
 
@@ -31,43 +34,43 @@ const AtTextarea = (props: API.AtTextareaProps) => {
 
     // 编辑器change
     const editorChange = (event: any) => {
-        // const _content = event.target.innerText
-        // 当前输入的
-        const currentStr = event.nativeEvent.data
-
-        if (currentStr === '@') {
-            openSelectModal()
-        }
+        editorClick()
     }
 
-    const editorClick = (e: any) => {
+    const editorClick = (e?: any) => {
+        const selection = window.getSelection() as Selection
+        const { focusNode, focusOffset } = selection as { focusNode: Node | { data: string }, focusOffset: number }
+        let cursorStr = ''
+        if ((focusNode as { data: string })?.data) {
+            cursorStr = (focusNode as { data: string })?.data.slice(0, focusOffset)
+        }
+        setAtBeforeStr(focusNode as Node)
+        const lastAtIndex = cursorStr?.lastIndexOf('@')
+        setCurrentAtIdx(lastAtIndex)
+        if (lastAtIndex !== -1) {
+            const range = selection?.getRangeAt(0) as Range
+            const { x, y } = range.getBoundingClientRect()
+            // 光标所在位置
+            setCursorPosition({ x, y })
+            const keyStr = cursorStr.slice(lastAtIndex + 1)
+            if (!StringTools.isIncludeSpacesOrLineBreak(keyStr)) {
+                setkeyStr(keyStr)
+                const _options = onRequest(keyStr)
+                setOptions(_options)
+                setVisible(true)
+            } else {
+                setVisible(false)
+                setkeyStr('')
+            }
+
+        } else {
+            setVisible(false)
+        }
+
         // 判断当前标签名是否为span 是的话选中当做一个整体
-        if (e.target.localName === 'span') {
+        if (e?.target?.localName === 'span') {
             window.getSelection()?.getRangeAt(0).selectNode(e.target as Node)
         }
-    }
-
-    // 展开弹框
-    const openSelectModal = () => {
-        const selection = window.getSelection() as Selection
-        const range = selection?.getRangeAt(0) as Range
-        const { focusNode, focusOffset } = selection
-        const { x, y } = range.getBoundingClientRect()
-
-        // 缓存光标所在节点
-        setAtBeforeStr(focusNode as Node)
-
-        // 缓存光标所在节点位置
-        setCurrentAtIdx(focusOffset)
-
-        // 光标所在位置
-        setCursorPosition({ x, y })
-
-        // 弹框
-        setVisible(true)
-
-        // 输入框失去焦点
-        atRef.current.blur()
 
     }
 
@@ -75,8 +78,8 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         const selection = window.getSelection()
         const range = selection?.getRangeAt(0) as Range
         // 选中输入的 @ 符
-        range.setStart(atBeforeStr as Node, currentAtIdx! - 1)
-        range.setEnd(atBeforeStr as Node, currentAtIdx!)
+        range.setStart(atBeforeStr as Node, currentAtIdx!)
+        range.setEnd(atBeforeStr as Node, currentAtIdx! + keyStr.length + 1)
         // 删除输入的 @ 符
         range.deleteContents()
         // 创建元素节点

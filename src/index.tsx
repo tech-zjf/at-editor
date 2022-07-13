@@ -6,7 +6,7 @@ const ReactDemo = () => {
             <AtTextarea
                 height={300}
                 onRequest={(e) => {
-                    // console.log('e', e);
+                    console.log('e', e);
                     return [
                         {
                             name: '张三',
