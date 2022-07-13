@@ -31,7 +31,7 @@ declare namespace API {
     height: number;
     placement?: "top" | "bottom";
     onRequest: (keyword?: string) => Options[];
-    onSelect: (selectList: Options[] | []) => void;
+    onChange: (content: string, selectList: Options[] | []) => void;
   };
   type SelectComProps = {
     visible: boolean;

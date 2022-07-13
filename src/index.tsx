@@ -10,8 +10,8 @@ const ReactDemo = () => {
                     const keyWord = e || ''
                     return DEFAULT_USERS_LIST.filter(item => item.name.includes(keyWord))
                 }}
-                onSelect={(e) => {
-                    console.log(e);
+                onChange={(content, selectUserList) => {
+                    console.log('selectUserList', content, selectUserList);
                 }}
             />
         </div>
