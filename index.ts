@@ -1,3 +1,3 @@
-import Test from "./src/index.jsx";
+import AtInput from "./src/comments/at-textarea";
 
-export default Test;
+export default AtInput;

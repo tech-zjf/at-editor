@@ -1,6 +1,6 @@
 {
-  "name": "at-editor",
-  "version": "1.0.0",
+  "name": "at-input",
+  "version": "1.0.1",
   "description": "’@‘ - Editor",
   "main": "index.js",
   "scripts": {
