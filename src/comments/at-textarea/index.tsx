@@ -13,13 +13,14 @@ const AtTextarea = (props: API.AtTextareaProps) => {
     // 用户数据
     const [options, setOptions] = useState<API.Options[]>([])
 
+    // @的索引
+    const [currentAtIdx, setCurrentAtIdx] = useState<number>()
+
     // 输入@之前的字符串
     const [atBeforeStr, setAtBeforeStr] = useState<Node | string>()
 
+    // @后关键字 @郑 = 郑
     const [keyStr, setkeyStr] = useState<string>('')
-
-    // @的索引 + 1
-    const [currentAtIdx, setCurrentAtIdx] = useState<number>()
 
     // 弹框的x,y轴的坐标
     const [cursorPosition, setCursorPosition] = useState<API.Position>({ x: 0, y: 0 })
@@ -77,11 +78,12 @@ const AtTextarea = (props: API.AtTextareaProps) => {
     const onSelect = (item: API.Options) => {
         const selection = window.getSelection()
         const range = selection?.getRangeAt(0) as Range
-        // 选中输入的 @ 符
+        // 选中输入的 @关键字  -> @郑
         range.setStart(atBeforeStr as Node, currentAtIdx!)
-        range.setEnd(atBeforeStr as Node, currentAtIdx! + keyStr.length + 1)
-        // 删除输入的 @ 符
+        range.setEnd(atBeforeStr as Node, currentAtIdx! + 1 + keyStr.length)
+        // 删除输入的 @关键字
         range.deleteContents()
+
         // 创建元素节点
         const element = document.createElement('span')
         element.className = 'atSpan'
@@ -92,9 +94,7 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         range.insertNode(element)
         // 光标移动到末尾
         range.collapse()
-
         setVisible(false)
-
         // 输入框聚焦
         atRef.current.focus()
     }
@@ -110,9 +110,6 @@ const AtTextarea = (props: API.AtTextareaProps) => {
                 contentEditable={true}
                 onInput={editorChange}
                 onClick={editorClick}
-                onFocus={() => {
-                    setVisible(false)
-                }}
             >
             </div>
             {/* 选择用户框 */}

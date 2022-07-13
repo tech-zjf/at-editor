@@ -1,4 +1,5 @@
 import AtTextarea from './comments/at-textarea/'
+import DEFAULT_USERS_LIST from './constant/default-user'
 import styles from './index.less'
 const ReactDemo = () => {
     return (
@@ -6,21 +7,8 @@ const ReactDemo = () => {
             <AtTextarea
                 height={300}
                 onRequest={(e) => {
-                    console.log('e', e);
-                    return [
-                        {
-                            name: '张三',
-                            id: 1
-                        },
-                        {
-                            name: '李四',
-                            id: 2
-                        },
-                        {
-                            name: '王五',
-                            id: 3
-                        }
-                    ]
+                    const keyWord = e || ''
+                    return DEFAULT_USERS_LIST.filter(item => item.name.includes(keyWord))
                 }}
                 onSelect={(e) => {
                     console.log(e);
