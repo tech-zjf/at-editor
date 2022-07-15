@@ -20,16 +20,11 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@@/*": ["./src/.umi/*"]
     }
   },
   "include": [
     "src/**/*",
     "typings/**/*",
-    "config/**/*",
-    ".eslintrc.js",
-    ".stylelintrc.js",
-    ".prettierrc.js",
   ],
-  "exclude": ["node_modules", "build", "dist", "scripts",  "webpack", ]
+  "exclude": ["node_modules", "build", "dist",]
 }
