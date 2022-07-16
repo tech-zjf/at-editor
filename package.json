@@ -1,11 +1,16 @@
 {
   "name": "at-input",
   "version": "1.0.2",
-  "description": "’@‘ - Editor",
-  "main": "index.js",
+  "description": "Refer to the user's input box",
+  "keywords": [
+    "mentions",
+    "at",
+    "@"
+  ],
+  "main": "lib/index.js",
   "scripts": {
     "start": "webpack server --mode development",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack  --mode development"
   },
   "repository": {
     "type": "git",

@@ -26,7 +26,7 @@ declare namespace API {
 
   type Position = { x: number; y: number };
 
-  type AtTextareaProps = {
+  type AtInputProps = {
     target?: string;
     height: number;
     placement?: "top" | "bottom";

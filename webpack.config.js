@@ -13,8 +13,8 @@ module.exports = {
   mode: "development", //这个值有3种：production、development、none
   entry: path.join(__dirname, "./public/app.js"),
   output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    path: path.resolve(__dirname, "lib"),
+    filename: "index.js",
   },
   module: {
     rules: [

@@ -4,7 +4,7 @@ import SelectUser from '../select-user'
 import styles from './index.less'
 
 
-const AtTextarea = (props: API.AtTextareaProps) => {
+const AtInput = (props: API.AtInputProps) => {
     const { height, onRequest, onChange } = props
 
     const [content, setContent] = useState<string>('')
@@ -158,4 +158,4 @@ const AtTextarea = (props: API.AtTextareaProps) => {
         </div>
     )
 }
-export default AtTextarea
+export default AtInput

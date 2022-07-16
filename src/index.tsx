@@ -1,10 +1,10 @@
-import AtTextarea from './comments/at-textarea/'
+import AtInput from './components/at-input'
 import DEFAULT_USERS_LIST from './constant/default-user'
 import styles from './index.less'
 const ReactDemo = () => {
     return (
         <div className={styles.page}>
-            <AtTextarea
+            <AtInput
                 height={300}
                 onRequest={(e) => {
                     const keyWord = e || ''
