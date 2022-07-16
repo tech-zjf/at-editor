@@ -1,6 +1,6 @@
 import StringTools from '../../tools/string-tools'
 import { useEffect, useRef, useState } from 'react'
-import SelectUser from '../select-user'
+import SelectUser from './select-user'
 import styles from './index.less'
 
 
@@ -27,6 +27,7 @@ const AtInput = (props: API.AtInputProps) => {
     // 弹框的x,y轴的坐标
     const [cursorPosition, setCursorPosition] = useState<API.Position>({ x: 0, y: 0 })
 
+    // 选择的用户
     const [selected, setSelected] = useState<API.Options[]>([])
 
     const atRef = useRef<any>()
